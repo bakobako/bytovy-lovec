@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "Bytovy Lovec"
+version = "1.0.0"
+description = "All pipelines and modules for Bytovy Lovec"
+authors = ["Adam Bako <adam@radiobotics.com>"]
+readme = "readme.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.12"
+
+####################
+# SHARED LIBRARIES #
+####################
+ai_client = { path = "shared/ai_client" }
+base_ad_scraper = { path = "shared/base_ad_scraper" }
+bezrealitky_scraper = { path = "shared/bezrealitky_scraper" }
+postgres_client = { path = "shared/postgres_client" }
+reality_idnes_scraper = { path = "shared/reality_idnes_scraper" }
+rental_ad_schema = { path = "shared/rental_ad_schema" }
+sreality_scraper = { path = "shared/sreality_scraper" }
+
+##############
+# LIBRARIES  #
+##############
+selenium = "~4.27.1"
+pydantic = "~2.10.5"
+setuptools = "~70.0.0"
+psycopg2-binary = "~2.9.1"
+flask = "~3.1.0"
+google-auth = "2.37.0"
+google-ai-generativelanguage = "0.6.10"
+google-api-core = "2.24.0"
+google-api-python-client = "2.158.0"
+prefect_docker = "0.6.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

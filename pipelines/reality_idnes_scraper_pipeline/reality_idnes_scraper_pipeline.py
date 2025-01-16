@@ -1,8 +1,8 @@
-from shared.reality_idnes_scraper.reality_idnes_scraper import RealityIdnesScraper
-from shared.postgres_client.postgres_client import PostgresClient
+from reality_idnes_scraper import RealityIdnesScraper
+from postgres_client import PostgresClient, init_db_client
 from prefect.blocks.system import Secret
 from prefect.blocks.system import String
-from shared.pipeline_utlis.db import init_db_client
+
 
 
 def download_reality_idnes_data():

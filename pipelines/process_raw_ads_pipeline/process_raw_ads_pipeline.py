@@ -1,7 +1,6 @@
-from shared.ai_client.ai_client import AIClient
-from shared.postgres_client.postgres_client import PostgresClient
+from ai_client import AIClient
+from postgres_client import PostgresClient, init_db_client
 from prefect.blocks.system import Secret
-from shared.pipeline_utlis.db import init_db_client
 
 
 def fetch_raw_ads(db_client):

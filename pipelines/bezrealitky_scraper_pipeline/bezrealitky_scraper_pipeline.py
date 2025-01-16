@@ -1,6 +1,5 @@
-from shared.bezrealitky_scraper.bezrealitky_scraper import BezRealitkyScraper
-from shared.postgres_client.postgres_client import PostgresClient
-from shared.pipeline_utlis.db import init_db_client
+from bezrealitky_scraper import BezRealitkyScraper
+from postgres_client import PostgresClient, init_db_client
 
 
 def download_bezrealitky_data():
