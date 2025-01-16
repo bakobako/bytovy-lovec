@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev
 
+RUN pip install poetry
+
 
 RUN apt-get update && apt-get install -y \
     wget \

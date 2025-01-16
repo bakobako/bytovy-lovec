@@ -10,7 +10,8 @@ pull:
   - prefect.deployments.steps.run_shell_script:
        script: |
             pip install poetry
-            poetry install --no-root
+            poetry config virtualenvs.create false
+            poetry install --no-interaction --no-root
        stream_output: true
   - prefect.deployments.steps.set_working_directory:
       directory: /opt/prefect/bytovy-lovec/pipelines/sreality_scraper_pipeline
