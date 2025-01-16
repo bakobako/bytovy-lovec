@@ -1,0 +1,4 @@
+/.venv/
+/shared.egg-info/
+.DS_Store
+.idea/
