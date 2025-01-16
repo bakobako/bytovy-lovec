@@ -10,8 +10,11 @@ pull:
   - prefect.deployments.steps.run_shell_script:
        script: |
             pip install -r requirements.txt
-            pip install -e .
        stream_output: true
+  - prefect.deployments.steps.run_shell_script:
+      script: |
+        pip install -e .
+      stream_output: true
   - prefect.deployments.steps.set_working_directory:
       directory: /opt/prefect/bytovy-lovec/pipelines/sreality_scraper_pipeline
 
