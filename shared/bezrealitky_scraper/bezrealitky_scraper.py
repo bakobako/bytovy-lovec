@@ -1,4 +1,4 @@
-from shared.base_ad_scraper.base_ad_scraper import BaseAdScrapper
+from base_ad_scraper import BaseAdScrapper
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait

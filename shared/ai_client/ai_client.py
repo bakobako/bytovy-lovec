@@ -1,6 +1,6 @@
 import re
 import json
-from shared.rental_ad_schema.rental_ad_schema import validate_property
+from rental_ad_schema import validate_property
 import google.generativeai as genai
 from retry import retry
 
