@@ -10,7 +10,10 @@ pull:
   - prefect.deployments.steps.run_shell_script:
        script: |
             pip install -r requirements.txt
+            echo "Listing files in current directory"
+            pwd
             ls -la
+            echo "Installing package in editable mode"
             pip install -e .
        stream_output: true
   - prefect.deployments.steps.set_working_directory:
