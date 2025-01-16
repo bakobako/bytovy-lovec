@@ -1,25 +1,6 @@
 name: sreality-scraper-pipeline
 prefect-version: 3.1.12
 
-# build section allows you to manage and build docker images
-build:
-  - prefect_docker.deployments.steps.build_docker_image:
-      image_name: bakoad/sreality_scraper_pipeline
-      tag: latest
-      dockerfile: Dockerfile
-      credentials: "{{ prefect.blocks.docker-registry-credentials.docker-creds }}"
-      platform: "linux/amd64"
-
-
-# push section allows you to manage if and how this project is uploaded to remote locations
-push:
-  - prefect_docker.deployments.steps.push_docker_image:
-      requires: prefect-docker
-      image_name: bakoad/sreality_scraper_pipeline
-      tag: latest
-
-
-# pull section allows you to provide instructions for cloning this project in remote locations
 pull:
   - prefect.deployments.steps.git_clone:
       repository: https://github.com/bakobako/bytovy-lovec.git
@@ -29,16 +10,19 @@ pull:
   - prefect.deployments.steps.run_shell_script:
        script: |
             pip install -r requirements.txt
+            ls -la
             pip install -e .
        stream_output: true
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec/pipelines/sreality_scraper_pipeline
 
 deployments:
   - name: sreality-scraper-pipeline
     description: Download and store data from Sreality
-    entrypoint: pipelines/sreality_scraper_pipeline/sreality_scraper_pipeline.py:download_srealty_data
+    entrypoint: sreality_scraper_pipeline.py:download_srealty_data
     schedule: null
     tags: ["Webscraper"]
     work_pool:
       name: gcp
       job_variables:
-        image: "{{ image_name }}"
+        image: bakoad/real-estate-pipelines

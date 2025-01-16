@@ -41,9 +41,5 @@ RUN CHROMEDRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com
     && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
     && rm chromedriver_linux64.zip
 
-COPY pipelines pipelines
-COPY shared shared
-COPY requirements.txt requirements.txt
-COPY setup.py setup.py
 
 ENV PREFECT_HOME="/opt/prefect/.prefect"
