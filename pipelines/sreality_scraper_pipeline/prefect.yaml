@@ -25,4 +25,4 @@ deployments:
     work_pool:
       name: gcp
       job_variables:
-        image: bakoad/real-estate-pipelines
+        image: bakoad/real-estate-prefect-pipelines:latest
