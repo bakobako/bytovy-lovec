@@ -12,8 +12,6 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3-dev
 
-RUN pip install poetry
-
 
 RUN apt-get update && apt-get install -y \
     wget \
@@ -33,15 +31,23 @@ RUN apt-get update && apt-get install -y \
     libcurl4 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-chrome.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update && apt-get install -y google-chrome-stable
-
-# Install Chromedriver
-RUN CHROMEDRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE) \
-    && wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip \
-    && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
-    && rm chromedriver_linux64.zip
+RUN apt-get update -qq -y && \
+    apt-get install -y \
+        libasound2 \
+        libatk-bridge2.0-0 \
+        libgtk-4-1 \
+        libnss3 \
+        xdg-utils \
+        wget && \
+    wget -q -O chrome-linux64.zip https://bit.ly/chrome-linux64-121-0-6167-85 && \
+    unzip chrome-linux64.zip && \
+    rm chrome-linux64.zip && \
+    mv chrome-linux64 /opt/chrome/ && \
+    ln -s /opt/chrome/chrome /usr/local/bin/ && \
+    wget -q -O chromedriver-linux64.zip https://bit.ly/chromedriver-linux64-121-0-6167-85 && \
+    unzip -j chromedriver-linux64.zip chromedriver-linux64/chromedriver && \
+    rm chromedriver-linux64.zip && \
+    mv chromedriver /usr/local/bin/
 
 
 ENV PREFECT_HOME="/opt/prefect/.prefect"
