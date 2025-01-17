@@ -1,13 +1,13 @@
-from base_ad_scraper import BaseAdScrapper
-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from logging import Logger
+
+from base_ad_scraper import BaseAdScrapper
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class SrealityScraper(BaseAdScrapper):
-    def __init__(self, visited_links, broken_links, logger: Logger, headless=True):
+    def __init__(self, visited_links: list[str], broken_links: list[str], logger: Logger, headless: bool = True):
         super().__init__(website_name="sreality",
                          base_url="https://www.sreality.cz/hledani/prodej/byty/praha?strana=0&lat-max=50.11331326855808"
                                   "&lat-min=50.03365817272972&lon-max=14.486485171952392&lon-min=14.400482822098876",
@@ -20,7 +20,7 @@ class SrealityScraper(BaseAdScrapper):
         self.new_link_data = []
         self.new_broken_links = []
 
-    def run(self):
+    def run(self) -> None:
         self.setup_driver()
         self.driver.get(self.base_url)
         self.accept_cookies()
@@ -28,7 +28,7 @@ class SrealityScraper(BaseAdScrapper):
         for link in self.links_to_visit:
             self.process_ad_page(link)
 
-    def accept_cookies(self):
+    def accept_cookies(self) -> None:
         self.driver.execute_cdp_cmd(
             "Page.addScriptToEvaluateOnNewDocument",
             {"source": """
@@ -46,7 +46,7 @@ class SrealityScraper(BaseAdScrapper):
         wait.until(lambda driver: driver.current_url != current_url)
         self.logger.info("Cookies accepted")
 
-    def get_all_ad_links(self):
+    def get_all_ad_links(self) -> None:
         wait = WebDriverWait(self.driver, 10)
         links = []
         page = 0
@@ -80,7 +80,7 @@ class SrealityScraper(BaseAdScrapper):
 
         self.links_to_visit = links
 
-    def process_ad_page(self, link: str):
+    def process_ad_page(self, link: str) -> None:
         if link in self.visited_links:
             return
         elif link in self.broken_links:
@@ -88,7 +88,7 @@ class SrealityScraper(BaseAdScrapper):
         else:
             self._fetch_data_from_link(link)
 
-    def _fetch_data_from_link(self, link: str):
+    def _fetch_data_from_link(self, link: str) -> None:
         self.driver.get(link)
         try:
             wait = WebDriverWait(self.driver, 10)

@@ -1,7 +1,6 @@
-from sreality_scraper import SrealityScraper
-
-from prefect import task, flow, get_run_logger
 from postgres_client import init_db_client
+from prefect import flow, get_run_logger
+from sreality_scraper import SrealityScraper
 
 
 @flow

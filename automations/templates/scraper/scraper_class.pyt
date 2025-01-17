@@ -7,7 +7,7 @@ from logging import Logger
 
 
 class {{scraper_class_name}}(BaseAdScrapper):
-    def __init__(self, visited_links, broken_links, logger: Logger, headless=True):
+    def __init__(self, visited_links: list[str], broken_links: list[str], logger: Logger, headless: bool=True):
         super().__init__(website_name="{{website_snake_case_name}}",
                          base_url="FILL IN",
                          visited_links=visited_links,
@@ -19,7 +19,7 @@ class {{scraper_class_name}}(BaseAdScrapper):
         self.new_link_data = []
         self.new_broken_links = []
 
-    def run(self):
+    def run(self)-> None:
         self.setup_driver()
         self.driver.get(self.base_url)
         self.accept_cookies()
@@ -27,7 +27,7 @@ class {{scraper_class_name}}(BaseAdScrapper):
         for link in self.links_to_visit:
             self.process_ad_page(link)
 
-    def accept_cookies(self):
+    def accept_cookies(self)-> None:
         pass
 
     def get_all_ad_links(self):
@@ -64,7 +64,7 @@ class {{scraper_class_name}}(BaseAdScrapper):
 
         self.links_to_visit = links
 
-    def process_ad_page(self, link: str):
+    def process_ad_page(self, link: str)-> None:
         if link in self.visited_links:
             return
         elif link in self.broken_links:
@@ -72,7 +72,7 @@ class {{scraper_class_name}}(BaseAdScrapper):
         else:
             self._fetch_data_from_link(link)
 
-    def _fetch_data_from_link(self, link: str):
+    def _fetch_data_from_link(self, link: str)-> None:
         self.driver.get(link)
         try:
             wait = WebDriverWait(self.driver, 10)

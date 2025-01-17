@@ -1,14 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class BaseAdScrapper:
-    def __init__(self, website_name, base_url, visited_links, broken_links, headless):
+    def __init__(self, website_name: str, base_url: str, visited_links: list, broken_links: list, headless: bool):
         self.website_name = website_name
         self.base_url = base_url
         self.headless = headless
@@ -20,7 +15,7 @@ class BaseAdScrapper:
 
         self.driver = None
 
-    def calculate_visited_links_percentage(self, links):
+    def calculate_visited_links_percentage(self, links: list) -> float:
         visited_links = 0
         for link in links:
             if link in self.visited_links:
@@ -28,7 +23,7 @@ class BaseAdScrapper:
         percentage = visited_links / len(links)
         return percentage
 
-    def run(self):
+    def run(self) -> None:
         # self.setup_driver()
         # self.accept_cookies()
         # self.get_all_ad_links()
@@ -36,7 +31,7 @@ class BaseAdScrapper:
         #     self.process_ad_page(link)
         pass
 
-    def setup_driver(self):
+    def setup_driver(self) -> None:
         chrome_options = ChromeOptions()
         if self.headless:
             chrome_options.add_argument('--headless')
@@ -48,11 +43,11 @@ class BaseAdScrapper:
         driver = webdriver.Chrome(options=chrome_options)
         self.driver = driver
 
-    def accept_cookies(self):
+    def accept_cookies(self) -> None:
         pass
 
-    def get_all_ad_links(self):
+    def get_all_ad_links(self) -> None:
         pass
 
-    def process_ad_page(self, link: str):
+    def process_ad_page(self, link: str) -> None:
         pass

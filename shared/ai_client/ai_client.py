@@ -1,21 +1,22 @@
-import re
 import json
-from rental_ad_schema import validate_property
+import re
+
 import google.generativeai as genai
+from rental_ad_schema import validate_property
 from retry import retry
 
 
 class AIClient:
-    def __init__(self, api_key):
+    def __init__(self, api_key: str):
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel('gemini-1.5-flash')
 
     @retry(tries=3, delay=4)
-    def _call_gemini_flash(self, prompt):
+    def _call_gemini_flash(self, prompt: str) -> str:
         response = self.model.generate_content(prompt)
         return response.text
 
-    def turn_response_to_json(self, response):
+    def turn_response_to_json(self, response: str) -> dict:
         try:
             cleaned_response = re.search(r"\{.*\}", response, re.DOTALL)
             if not cleaned_response:
@@ -30,11 +31,11 @@ class AIClient:
         except Exception as e:
             raise ValueError(f"Validation failed: {e}")
 
-    def get_structured_response(self, prompt):
+    def get_structured_response(self, prompt: str) -> dict:
         response_text = self._call_gemini_flash(prompt)
         return self.turn_response_to_json(response_text)
 
-    def analyse_real_estate_ad(self, ad_text):
+    def analyse_real_estate_ad(self, ad_text: str) -> dict:
         prompt = """
         You are an AI assistant specialized in extracting structured data from raw text of real estate listings.
         Your task is to analyze the given raw text from a Czech real estate website and extract specific information 

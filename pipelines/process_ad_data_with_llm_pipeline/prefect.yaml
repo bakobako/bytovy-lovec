@@ -1,0 +1,31 @@
+name: process-ad-data-with-llm-pipeline
+prefect-version: 3.1.12
+
+pull:
+  - prefect.deployments.steps.git_clone:
+      repository: https://github.com/bakobako/bytovy-lovec.git
+      credentials: "{{ prefect.blocks.github-credentials.github-pat }}"
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec
+  - prefect.deployments.steps.run_shell_script:
+       script: |
+            pip install poetry
+            poetry config virtualenvs.create false
+            poetry install --no-interaction --no-root
+       stream_output: true
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec/pipelines/process_ad_data_with_llm_pipeline
+
+deployments:
+  - name: process-ad-data-with-llm-pipeline
+    description: Pipeline that processes ingested real estate ads with Gemini API
+    entrypoint: process_ad_data_with_llm_pipeline.py:process_raw_ads
+    schedules:
+      - cron: "0 9,12,16 * * *"
+        timezone: "Europe/Prague"
+        active: true
+    tags: ["AI Analysis"]
+    work_pool:
+      name: gcp
+      job_variables:
+        image: bakoad/real-estate-prefect-pipelines:latest

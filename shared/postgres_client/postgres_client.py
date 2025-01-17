@@ -1,19 +1,9 @@
-import psycopg2
-from psycopg2.extras import RealDictCursor
 from typing import Dict, List, Optional, Any
+
+import psycopg2
 from prefect.blocks.system import Secret
 from prefect.blocks.system import String
-
-
-def init_db_client():
-    db_name = String.load("db-bytovy-lovec-url").value
-    password = Secret.load("db-bytovy-lovec-password").get()
-    db_client = PostgresClient(host=db_name,
-                               port=5432,
-                               database="postgres",
-                               user="bako",
-                               password=password)
-    return db_client
+from psycopg2.extras import RealDictCursor
 
 
 class PostgresClient:
@@ -122,3 +112,14 @@ class PostgresClient:
                 return cursor.fetchall()
         except psycopg2.Error as e:
             raise Exception(f"An error occurred while fetching data: {e}")
+
+
+def init_db_client() -> PostgresClient:
+    db_name = String.load("db-bytovy-lovec-url").value
+    password = Secret.load("db-bytovy-lovec-password").get()
+    db_client = PostgresClient(host=db_name,
+                               port=5432,
+                               database="postgres",
+                               user="bako",
+                               password=password)
+    return db_client

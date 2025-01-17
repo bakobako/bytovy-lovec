@@ -1,23 +1,26 @@
-from base_ad_scraper import BaseAdScrapper
 import time
+from logging import Logger
+
+from base_ad_scraper import BaseAdScrapper
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class RealityIdnesScraper(BaseAdScrapper):
-    def __init__(self, visited_links, broken_links, headless=True):
+    def __init__(self, visited_links: list[str], broken_links: list[str], logger: Logger, headless: bool = True):
         super().__init__(website_name="reality_idnes",
                          base_url="https://reality.idnes.cz/s/prodej/byty/praha/?page=0",
                          visited_links=visited_links,
                          broken_links=broken_links,
                          headless=headless)
         self.links_to_visit = []
+        self.logger = logger
 
         self.new_link_data = []
         self.new_broken_links = []
 
-    def run(self):
+    def run(self) -> None:
         self.setup_driver()
         self.driver.get(self.base_url)
         self.accept_cookies()
@@ -25,7 +28,7 @@ class RealityIdnesScraper(BaseAdScrapper):
         for link in self.links_to_visit:
             self.process_ad_page(link)
 
-    def accept_cookies(self):
+    def accept_cookies(self) -> None:
         WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable((By.ID, 'didomi-notice-agree-button'))
         )
@@ -33,7 +36,7 @@ class RealityIdnesScraper(BaseAdScrapper):
         allow_cookies_button.click()
         time.sleep(1)
 
-    def get_all_ad_links(self):
+    def get_all_ad_links(self) -> None:
         wait = WebDriverWait(self.driver, 10)
         links = []
         page = 0
@@ -41,7 +44,7 @@ class RealityIdnesScraper(BaseAdScrapper):
         while True:
             current_page_url = self.base_url.replace(f"page=0",
                                                      f"page={page}") if page > 0 else self.base_url
-            print(f"Getting page {current_page_url}")
+            self.logger.info(f"Getting page {current_page_url}")
             self.driver.get(current_page_url)
             raw_links = self.driver.find_elements(By.TAG_NAME, 'a')
 
@@ -55,7 +58,7 @@ class RealityIdnesScraper(BaseAdScrapper):
             links.extend(clean_links)
 
             percentage_seen = self.calculate_visited_links_percentage(clean_links)
-            print(f"Percentage of visited links: {percentage_seen}")
+            self.logger.info(f"Percentage of visited links: {percentage_seen}")
             page += 1
 
             if percentage_seen > 0.95 and page > 10:
@@ -83,7 +86,7 @@ class RealityIdnesScraper(BaseAdScrapper):
             extra_data = self.driver.find_element(By.CLASS_NAME, "b-definition-columns").text
             all_data = f"{title_data}\n{subtitle_data}\n{cost_data}\n{popis_data}\n{extra_data}"
         except Exception as e:
-            print(f"Error while processing link {link} {e}")
+            self.logger.warning(f"Error while processing link {link} {e}")
             self.new_broken_links.append(link)
             return
         self.new_link_data.append(
