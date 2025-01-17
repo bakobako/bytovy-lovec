@@ -6,11 +6,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from logging import Logger
 
 
-class SrealityScraper(BaseAdScrapper):
+class {{scraper_class_name}}(BaseAdScrapper):
     def __init__(self, visited_links, broken_links, logger: Logger, headless=True):
-        super().__init__(website_name="sreality",
-                         base_url="https://www.sreality.cz/hledani/prodej/byty/praha?strana=0&lat-max=50.11331326855808"
-                                  "&lat-min=50.03365817272972&lon-max=14.486485171952392&lon-min=14.400482822098876",
+        super().__init__(website_name="{{website_snake_case_name}}",
+                         base_url="FILL IN",
                          visited_links=visited_links,
                          broken_links=broken_links,
                          headless=headless)
@@ -29,22 +28,7 @@ class SrealityScraper(BaseAdScrapper):
             self.process_ad_page(link)
 
     def accept_cookies(self):
-        self.driver.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {"source": """
-        Element.prototype._attachShadow = Element.prototype.attachShadow;
-        Element.prototype.attachShadow = function () {
-            return this._attachShadow( { mode: "open" } );
-        };
-        """}, )
-        wait = WebDriverWait(self.driver, 10)
-        closed_shadow_host = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".szn-cmp-dialog-container")))
-        shadow_root = self.driver.execute_script("return arguments[0].shadowRoot", closed_shadow_host)
-        button = shadow_root.find_element(By.CSS_SELECTOR, "button[data-testid='cw-button-agree-with-ads']")
-        button.click()
-        current_url = self.driver.current_url
-        wait.until(lambda driver: driver.current_url != current_url)
-        self.logger.info("Cookies accepted")
+        pass
 
     def get_all_ad_links(self):
         wait = WebDriverWait(self.driver, 10)

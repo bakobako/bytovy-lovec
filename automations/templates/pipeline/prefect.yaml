@@ -1,4 +1,4 @@
-name: sreality-scraper-pipeline
+name: {{pipeline_dash_name}}
 prefect-version: 3.1.12
 
 pull:
@@ -14,12 +14,12 @@ pull:
             poetry install --no-interaction --no-root
        stream_output: true
   - prefect.deployments.steps.set_working_directory:
-      directory: /opt/prefect/bytovy-lovec/pipelines/sreality_scraper_pipeline
+      directory: /opt/prefect/bytovy-lovec/pipelines/{{scraper_snake_case_pipeline_name}}
 
 deployments:
-  - name: sreality-scraper-pipeline
-    description: Download and store data from Sreality
-    entrypoint: sreality_scraper_pipeline.py:download_srealty_data
+  - name: {{pipeline_dash_name}}
+    description: Download and store data from {{website_name}}
+    entrypoint: {{scraper_snake_case_pipeline_name}}.py:{{download_function_name}}
     schedules:
       - cron: "0 8,11,15 * * *"
         timezone: "Europe/Prague"
