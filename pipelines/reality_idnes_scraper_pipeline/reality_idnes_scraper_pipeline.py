@@ -22,7 +22,7 @@ def download_reality_idnes_data():
         visited_links=visited_links,
         broken_links=broken_links,
         logger=logger,
-        headless=False
+        headless=True
     )
     scraper.run()
 

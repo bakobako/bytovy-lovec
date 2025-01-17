@@ -29,12 +29,15 @@ class RealityIdnesScraper(BaseAdScrapper):
             self.process_ad_page(link)
 
     def accept_cookies(self) -> None:
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'didomi-notice-agree-button'))
-        )
-        allow_cookies_button = self.driver.find_element(By.ID, 'didomi-notice-agree-button')
-        allow_cookies_button.click()
-        time.sleep(1)
+        try:
+            WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.ID, 'didomi-notice-agree-button'))
+            )
+            allow_cookies_button = self.driver.find_element(By.ID, 'didomi-notice-agree-button')
+            allow_cookies_button.click()
+            time.sleep(1)
+        except Exception as e:
+            self.logger.warning(f"Error while accepting cookies {e}")
 
     def get_all_ad_links(self) -> None:
         wait = WebDriverWait(self.driver, 10)
