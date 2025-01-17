@@ -14,7 +14,7 @@ pull:
             poetry install --no-interaction --no-root
        stream_output: true
   - prefect.deployments.steps.set_working_directory:
-      directory: /opt/prefect/bytovy-lovec/pipelines/bezrealitky_scraper_pipeline.py
+      directory: /opt/prefect/bytovy-lovec/pipelines/bezrealitky_scraper_pipeline
 
 deployments:
   - name: bezrealitky-scraper-pipeline.py
