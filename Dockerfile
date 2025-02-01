@@ -49,5 +49,11 @@ RUN apt-get update -qq -y && \
     rm chromedriver-linux64.zip && \
     mv chromedriver /usr/local/bin/
 
+RUN poetry cache clear --all pypi
+
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction \
+    && rm -rf /root/.cache/pypoetry
+
 
 ENV PREFECT_HOME="/opt/prefect/.prefect"

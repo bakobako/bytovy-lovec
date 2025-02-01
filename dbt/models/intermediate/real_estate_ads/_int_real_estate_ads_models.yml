@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: int_cleaned_strings_analysed_real_estate_ads
+    description: tbd
+  - name: int_deduplicated_analysed_real_estate_ads
+    description: tbd
+  - name: int_matched_listings
+    description: tbd

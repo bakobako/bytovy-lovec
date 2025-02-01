@@ -1,20 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Map Polygon Drawer</title>
+  <title>Bytový Lovec - Nastavení Preferencí</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <div id="app">
-    <h1>Map Polygon Drawer</h1>
-    <p>Draw a polygon to extract streets within the selected area.</p>
-    <div id="map"></div>
-    <button id="export-data">Export Data</button>
+    <h1>Bytový lovec</h1>
+    <p>Nastavte své preference pro hledání bytu:</p>
+
+    <!-- Dispozice -->
+    <div class="section">
+      <h2>Dispozice</h2>
+      <div>
+        <label><input type="checkbox" name="dispozice" value="1kk"> 1kk</label>
+        <label><input type="checkbox" name="dispozice" value="1+1"> 1+1</label>
+        <label><input type="checkbox" name="dispozice" value="2kk"> 2kk</label>
+        <label><input type="checkbox" name="dispozice" value="2+1"> 2+1</label>
+        <label><input type="checkbox" name="dispozice" value="3kk"> 3kk</label>
+        <label><input type="checkbox" name="dispozice" value="3+1"> 3+1</label>
+        <label><input type="checkbox" name="dispozice" value="4kk"> 4kk</label>
+        <label><input type="checkbox" name="dispozice" value="4+1"> 4+1</label>
+        <label><input type="checkbox" name="dispozice" value="5kk"> 5kk</label>
+        <label><input type="checkbox" name="dispozice" value="5+1"> 5+1</label>
+        <label><input type="checkbox" name="dispozice" value="others"> Ostatní</label>
+      </div>
+    </div>
+
+    <!-- Lokace - Map -->
+    <div class="section">
+      <h2>Lokace</h2>
+      <p>Vyberte oblast na mapě, kde chcete hledat.</p>
+      <div id="map"></div>
+    </div>
+
+    <!-- Vlastnosti nemovitosti -->
+    <div class="section">
+      <h2>Vlastnosti nemovitosti</h2>
+
+      <h3>Vlastnictví</h3>
+      <div>
+        <label><input type="checkbox" name="ownership" value="Osobní"> Osobní</label>
+        <label><input type="checkbox" name="ownership" value="Družstevní"> Družstevní</label>
+        <label><input type="checkbox" name="ownership" value="Jiné"> Jiné</label>
+      </div>
+
+      <h3>Stav</h3>
+      <div>
+        <label><input type="checkbox" name="condition" value="Nový"> Nový</label>
+        <label><input type="checkbox" name="condition" value="Rekonstruovaný"> Rekonstruovaný</label>
+        <label><input type="checkbox" name="condition" value="Před rekonstrukcí"> Před rekonstrukcí</label>
+        <label><input type="checkbox" name="condition" value="Po rekonstrukci"> Po rekonstrukci</label>
+      </div>
+
+      <h3>Příslušenství</h3>
+      <div>
+        <label><input type="checkbox" name="accessories" value="Balkon"> Balkon</label>
+        <label><input type="checkbox" name="accessories" value="Terasa"> Terasa</label>
+        <label><input type="checkbox" name="accessories" value="Garáž"> Garáž</label>
+        <label><input type="checkbox" name="accessories" value="Parkovací místo"> Parkovací místo</label>
+        <label><input type="checkbox" name="accessories" value="Výtah"> Výtah</label>
+      </div>
+
+      <h3>Stavba</h3>
+      <div>
+        <label><input type="checkbox" name="building_type" value="Panelová"> Panelová</label>
+        <label><input type="checkbox" name="building_type" value="Cihlová"> Cihlová</label>
+        <label><input type="checkbox" name="building_type" value="Jiné"> Jiné</label>
+      </div>
+
+      <h3>Energetická náročnost</h3>
+      <div>
+        <label><input type="checkbox" name="energy_efficiency" value="A"> A</label>
+        <label><input type="checkbox" name="energy_efficiency" value="B"> B</label>
+        <label><input type="checkbox" name="energy_efficiency" value="C"> C</label>
+        <label><input type="checkbox" name="energy_efficiency" value="D"> D</label>
+        <label><input type="checkbox" name="energy_efficiency" value="E"> E</label>
+        <label><input type="checkbox" name="energy_efficiency" value="F"> F</label>
+        <label><input type="checkbox" name="energy_efficiency" value="G"> G</label>
+      </div>
+    </div>
+
+   <!-- Cena -->
+<div class="section">
+  <h3>Cena</h3>
+  <div class="input-group">
+    <div>
+      <label for="price_from">Cena od</label>
+      <input type="number" id="price_from" placeholder="Např. 2000000">
+    </div>
+    <div>
+      <label for="price_to">Cena do</label>
+      <input type="number" id="price_to" placeholder="Např. 5000000">
+    </div>
   </div>
+</div>
+
+<!-- Plocha -->
+<div class="section">
+  <h3>Plocha</h3>
+  <div class="input-group">
+    <div>
+      <label for="area_from">Plocha od</label>
+      <input type="number" id="area_from" placeholder="Např. 40">
+    </div>
+    <div>
+      <label for="area_to">Plocha do</label>
+      <input type="number" id="area_to" placeholder="Např. 80">
+    </div>
+  </div>
+
+<!-- Podlaží -->
+<div class="section">
+  <h3>Podlaží</h3>
+  <div class="input-group">
+    <div>
+      <label for="floor_from">Od podlaží</label>
+      <input type="number" id="floor_from" min="1" placeholder="Např. 2">
+    </div>
+    <div>
+      <label for="floor_to">Do podlaží</label>
+      <input type="number" id="floor_to" min="1" placeholder="Např. 5">
+    </div>
+  </div>
+</div>
+
+
+    <!-- Submit Button -->
+    <div class="section">
+      <button id="submit-btn">Nastavit hlidani</button>
+    </div>
+
+  </div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
   <script src="{{ url_for('static', filename='js/map.js') }}"></script>

@@ -1,0 +1,14 @@
+bytovy_lovec:
+  target: prod
+  outputs:
+    prod:
+      type: "postgres"
+      threads: 4
+      host: "{{ env_var('DBT_ENV_URL_PROD') }}"
+      port: 5432
+      user: "bako"
+      pass: "{{ env_var('DBT_ENV_SECRET_PROD') }}"
+      schema: "public"
+      dbname: "postgres"
+      sslmode: "require"
+      keepalives_idle: 60

@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: matched_real_estate_listings
+    description: TBD

@@ -13,7 +13,6 @@ The data is then stored in a database and used for notifying users about new lis
 - Svoboda-Williams.com
 - realitymix.cz
 - archer-reality.cz
-- reality.bazos.cz
 - reality.cz
 - eurobydleni.cz
 - https://www.maxima.cz/nabidka-nemovitosti/?at=1&kraj=praha
@@ -39,3 +38,9 @@ To generate a new scraper run the following command in from the data_infrastruct
 ```bash
 python automations/generate_new_scraper.py
 ```
+
+# For chatgpt definiton of the project
+
+The project is a collection of scrapers that scrape real estate data from different websites.
+Along side the scrappers there is a website where users can set their preferences for real estate listings.
+The data is then stored in a database and used for notifying users about new listings based on their preferences.

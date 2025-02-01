@@ -3,3 +3,7 @@
 .DS_Store
 .idea/
 /poetry.lock
+/dbt/logs/
+/dbt/.user.yml
+/dbt/target/
+/dbt/dbt_packages/

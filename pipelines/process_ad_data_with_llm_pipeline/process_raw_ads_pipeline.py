@@ -21,6 +21,7 @@ def process_raw_ads():
             response = ai_client.analyse_real_estate_ad(ad_text)
             response["ad_url"] = raw_ad["ad_url"]
             response["source_name"] = raw_ad["source_name"]
+            response['ingested_timestamp'] = raw_ad['ingested_timestamp']
             db_client.insert_row(schema="raw", table="analysed_real_estate_ads", data=response)
             print(f"Processed ad: {raw_ad['ad_url']}")
         except Exception as e:
