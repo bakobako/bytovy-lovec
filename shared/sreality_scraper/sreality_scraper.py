@@ -1,9 +1,11 @@
 from logging import Logger
-
+import requests
 from base_ad_scraper import BaseAdScrapper
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+import time
 
 
 class SrealityScraper(BaseAdScrapper):
@@ -57,25 +59,19 @@ class SrealityScraper(BaseAdScrapper):
                                                      f"strana={page}") if page > 0 else self.base_url
             self.logger.info(f"Getting page {current_page_url}")
             self.driver.get(current_page_url)
-            try:
-                wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "css-vpeef3")))
-            except Exception as e:
-                break
-            divs = self.driver.find_elements(By.CLASS_NAME, "css-vpeef3")
-            if not divs:
-                break
+            time.sleep(1)
 
-            page_links = [
-                div.get_attribute("href")
-                for div in divs
-                if div.get_attribute("href") and "www.sreality.cz" in div.get_attribute("href")
-            ]
+            raw_links = self.driver.find_elements(By.TAG_NAME, 'a')
+            page_links = [link.get_attribute('href') for link in raw_links
+                          if 'www.sreality.cz/detail/prodej/byt' in link.get_attribute('href') and len(
+                    link.get_attribute('href')) < 256]
+
             links.extend(page_links)
 
             percentage_seen = self.calculate_visited_links_percentage(page_links)
             self.logger.info(f"Percentage of visited links: {percentage_seen}")
             page += 1
-            if percentage_seen > 0.95 and page > 5:
+            if percentage_seen > 0.95 and page > 10:
                 break
 
         self.links_to_visit = links
@@ -89,14 +85,15 @@ class SrealityScraper(BaseAdScrapper):
             self._fetch_data_from_link(link)
 
     def _fetch_data_from_link(self, link: str) -> None:
-        self.driver.get(link)
         try:
-            wait = WebDriverWait(self.driver, 10)
-            wait.until(EC.presence_of_element_located((By.TAG_NAME, "h1")))
-            title_data = self.driver.find_element(By.TAG_NAME, "h1").text
-            cost_data = self.driver.find_element(By.CLASS_NAME, "css-117xoa7").text
-            popis_data = self.driver.find_element(By.CLASS_NAME, "css-3qzm71").text
-            all_data = f"{title_data}\n{cost_data}\n{popis_data}"
+            id_of_ad = link.split("/")[-1]
+            data = requests.get(f"https://www.sreality.cz/api/cs/v2/estates/{id_of_ad}").json()
+            title_data = data["name"]["value"] + " " + data["locality"]["value"]
+            cost_data = data["price_czk"]["value"] + "Kč"
+            description = data["text"]["value"]
+            meta_description = data["meta_description"]
+
+            all_data = title_data + " " + cost_data + " " + description + " " + meta_description
         except Exception as e:
             self.logger.info(f"Failed to process ad: {link}, error: {e}")
             self.new_broken_links.append(link)

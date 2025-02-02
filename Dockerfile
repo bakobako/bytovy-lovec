@@ -7,6 +7,9 @@ ENV PYTHONUNBUFFERED 1
 
 ENV DISPLAY=:99
 
+COPY pyproject.toml pyproject.toml
+COPY shared shared
+
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     build-essential \
@@ -49,10 +52,12 @@ RUN apt-get update -qq -y && \
     rm chromedriver-linux64.zip && \
     mv chromedriver /usr/local/bin/
 
+RUN pip install poetry
+
 RUN poetry cache clear --all pypi
 
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction \
+    && poetry install --no-interaction --no-root \
     && rm -rf /root/.cache/pypoetry
 
 
