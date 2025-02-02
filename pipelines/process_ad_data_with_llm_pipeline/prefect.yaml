@@ -19,7 +19,7 @@ pull:
 deployments:
   - name: process-ad-data-with-llm-pipeline
     description: Pipeline that processes ingested real estate ads with Gemini API
-    entrypoint: process_ad_data_with_llm_pipeline.py:process_raw_ads
+    entrypoint: process_raw_ads_pipeline.py:process_raw_ads
     schedules:
       - cron: "0 9,12,16 * * *"
         timezone: "Europe/Prague"

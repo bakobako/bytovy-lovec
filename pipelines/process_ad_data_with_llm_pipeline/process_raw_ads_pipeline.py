@@ -1,8 +1,10 @@
 from ai_client import AIClient
 from postgres_client import init_db_client
 from prefect.blocks.system import Secret
+from prefect import task, flow
 
 
+@task
 def fetch_raw_ads(db_client):
     processed_ads = db_client.execute_query_and_fetch_dicts("""SELECT * FROM raw.raw_real_estate_ads 
     WHERE ad_url NOT IN (
@@ -10,6 +12,7 @@ def fetch_raw_ads(db_client):
     return processed_ads
 
 
+@flow
 def process_raw_ads():
     db_client = init_db_client()
     ai_api_key = Secret.load("google-gemini-flash-api-key").get()

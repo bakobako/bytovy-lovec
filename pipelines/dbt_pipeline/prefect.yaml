@@ -9,6 +9,7 @@ pull:
       directory: /opt/prefect/bytovy-lovec
   - prefect.deployments.steps.run_shell_script:
        script: |
+            pip install poetry
             poetry config virtualenvs.create false
             poetry install --no-interaction --no-root
        stream_output: true
@@ -18,7 +19,7 @@ pull:
 deployments:
   - name: run-dbt-pipeline
     description: Pipeline that runs dbt models
-    entrypoint: run_dbt_pipeline.py.py:run_dbt
+    entrypoint: run_dbt_pipeline.py:run_dbt
     schedules:
       - cron: "0 9,12,16 * * *"
         timezone: "Europe/Prague"
