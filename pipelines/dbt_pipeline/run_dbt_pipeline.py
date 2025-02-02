@@ -31,7 +31,7 @@ def set_credentials() -> None:
 
 
 @flow
-def run_dbt(dbt_dir: str = "../dbt") -> None:
+def run_dbt(dbt_dir: str = "../../dbt") -> None:
     """
     Sets up credentials and executes dbt run command for marts (and all their downstream models)
     in a specified environment.

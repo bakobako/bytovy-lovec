@@ -20,6 +20,7 @@ deployments:
   - name: run-dbt-pipeline
     description: Pipeline that runs dbt models
     entrypoint: run_dbt_pipeline.py:run_dbt
+    parameters: { "dbt_dir": "../../dbt" }
     schedules:
       - cron: "0 9,12,16 * * *"
         timezone: "Europe/Prague"
