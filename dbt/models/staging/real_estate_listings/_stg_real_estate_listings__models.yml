@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: stg_real_estate_listings__analysed_real_estate_listings
+    description: Contains analysed real estate listings data.
+  - name: stg_real_estate_listings__raw_real_estate_listings
+    description: Contains raw real estate listings data.

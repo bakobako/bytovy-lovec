@@ -15,6 +15,8 @@ class Tracker(Base):
     max_price = Column(DECIMAL(15, 2), nullable=True)
     min_bedrooms = Column(Integer, nullable=True)
     max_bedrooms = Column(Integer, nullable=True)
+    min_floor = Column(Integer, nullable=True)
+    max_floor = Column(Integer, nullable=True)
     min_square_meters = Column(DECIMAL(10, 2), nullable=True)
     max_square_meters = Column(DECIMAL(10, 2), nullable=True)
     preferences = Column(JSONB, nullable=True)  # Using JSONB for flexible preferences data

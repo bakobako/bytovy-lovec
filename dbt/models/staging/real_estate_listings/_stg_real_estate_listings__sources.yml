@@ -1,12 +1,123 @@
 version: 2
 
 sources:
-  - name: sales
+  - name: real_estate_listings
     tables:
-      - name: customers
-        description: Contains analyzed data of real estate advertisements, including property details and pricing information.
+      - name: analysed_real_estate_listings
+        description: Contains processed real estate listings with detailed property attributes.
         columns:
-          - name: ad_url
-            description: URL of the advertisement.
+          - name: listing_id
+            description: Unique identifier for each listing, referencing raw real estate listings.
+            tests:
+              - not_null
+              - unique
+              - relationships:
+                  to: ref('raw_real_estate_listings')
+                  field: listing_id
+          - name: property_type
+            description: Type of property being listed.
+            tests:
+              - not_null
+          - name: listing_price
+            description: Price of the property listing.
+          - name: currency
+            description: Currency of the listing price.
+            tests:
+              - not_null
+          - name: city
+            description: City where the property is located.
+            tests:
+              - not_null
+          - name: district
+            description: District of the property.
+          - name: street
+            description: Street name of the property.
+          - name: house_number
+            description: House number of the property.
+          - name: latitude
+            description: Latitude coordinates of the property.
+          - name: longitude
+            description: Longitude coordinates of the property.
+          - name: num_bedrooms
+            description: Number of bedrooms in the property.
+          - name: num_bathrooms
+            description: Number of bathrooms in the property.
+          - name: area_m2
+            description: Total area of the property in square meters.
+          - name: apartment_layout
+            description: Layout type of the apartment.
+          - name: is_walkthrough_apartment
+            description: Indicates if the apartment is a walkthrough type.
+          - name: floor_number
+            description: Floor number where the apartment is located.
+          - name: building_floors
+            description: Total number of floors in the building.
+          - name: type_of_ownership
+            description: Ownership type of the property.
+          - name: type_of_building
+            description: Type of the building structure.
+          - name: condition
+            description: Condition of the property.
+          - name: energy_efficiency_label
+            description: Energy efficiency rating of the property.
+          - name: energy_usage
+            description: Energy usage details.
+          - name: monthly_payments_czk
+            description: Monthly payments in CZK.
+          - name: is_rooftop_apartment
+            description: Indicates if the property is a rooftop apartment.
+          - name: is_mezonet
+            description: Indicates if the property is a mezonet (multi-level apartment).
+          - name: has_balcony
+            description: Indicates if the property has a balcony.
+          - name: balcony_area_m2
+            description: Area of the balcony in square meters.
+          - name: has_terrace
+            description: Indicates if the property has a terrace.
+          - name: terrace_area_m2
+            description: Area of the terrace in square meters.
+          - name: has_parking_spot
+            description: Indicates if the property has a parking spot.
+          - name: has_garage
+            description: Indicates if the property has a garage.
+          - name: has_elevator
+            description: Indicates if the building has an elevator.
+          - name: has_cellar
+            description: Indicates if the property has a cellar.
+          - name: cellar_area_m2
+            description: Area of the cellar in square meters.
+          - name: flooring_type
+            description: Type of flooring in the property.
+
+      - name: raw_real_estate_listings
+        description: Contains raw real estate listings before analysis.
+        columns:
+          - name: listing_id
+            description: Unique identifier for each raw listing.
+            tests:
+              - not_null
+              - unique
+          - name: source_portal
+            description: Source portal from where the listing was retrieved.
+            tests:
+              - not_null
+          - name: listing_url
+            description: URL of the property listing.
+            tests:
+              - not_null
+          - name: ad_title
+            description: Title of the advertisement.
+            tests:
+              - not_null
+          - name: ad_text
+            description: Full text of the advertisement.
+            tests:
+              - not_null
+          - name: is_active
+            description: Indicates if the listing is currently active.
+            tests:
+              - not_null
+          - name: ingested_at
+            description: Timestamp when the listing was ingested.
             tests:
               - not_null

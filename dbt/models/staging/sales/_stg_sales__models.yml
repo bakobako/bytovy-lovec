@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: stg_sales__customers
+    description: Customer data from the sales system.
+  - name: stg_sales__subscriptions
+    description: Subscription data from the sales system.

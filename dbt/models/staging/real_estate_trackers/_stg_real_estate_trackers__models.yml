@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: stg_real_estate_trackers__tracker_notifications
+    description: Stores notifications sent for tracker matches.
+  - name: stg_real_estate_trackers__trackers
+    description: Contains user-defined tracking criteria for real estate properties.

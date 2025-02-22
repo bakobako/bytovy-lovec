@@ -1,12 +1,29 @@
 version: 2
 
 sources:
-  - name: sales
+  - name: cloud_infrastructure
     tables:
-      - name: customers
-        description: Contains analyzed data of real estate advertisements, including property details and pricing information.
+      - name: pipeline_runs
+        description: Tracks the execution of data pipelines.
         columns:
-          - name: ad_url
-            description: URL of the advertisement.
+          - name: run_id
+            description: Unique identifier for each pipeline run.
+            tests:
+              - not_null
+              - unique
+          - name: pipeline_name
+            description: Name of the executed pipeline.
+            tests:
+              - not_null
+          - name: start_timestamp
+            description: Timestamp when the pipeline execution started.
+            tests:
+              - not_null
+          - name: end_timestamp
+            description: Timestamp when the pipeline execution ended.
+            tests:
+              - not_null
+          - name: status
+            description: Status of the pipeline run (e.g., success, failure).
             tests:
               - not_null
