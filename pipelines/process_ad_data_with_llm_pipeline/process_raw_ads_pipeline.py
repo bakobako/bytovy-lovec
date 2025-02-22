@@ -6,9 +6,10 @@ from prefect import task, flow
 
 @task
 def fetch_raw_ads(db_client):
-    processed_ads = db_client.execute_query_and_fetch_dicts("""SELECT * FROM raw.raw_real_estate_ads 
-    WHERE ad_url NOT IN (
-    SELECT ad_url FROM raw.analysed_real_estate_ads );""")
+    processed_ads = db_client.execute_query_and_fetch_dicts("""SELECT * FROM 
+    real_estate_listings.raw_real_estate_listings 
+    WHERE listing_id NOT IN (
+    SELECT listing_id FROM real_estate_listings.analysed_real_estate_listings );""")
     return processed_ads
 
 
@@ -20,15 +21,17 @@ def process_raw_ads():
     raw_ads = fetch_raw_ads(db_client)
     for raw_ad in raw_ads:
         ad_text = raw_ad["ad_text"]
+        listing_id = raw_ad["listing_id"]
         try:
             response = ai_client.analyse_real_estate_ad(ad_text)
-            response["ad_url"] = raw_ad["ad_url"]
-            response["source_name"] = raw_ad["source_name"]
-            response['ingested_timestamp'] = raw_ad['ingested_timestamp']
-            db_client.insert_row(schema="raw", table="analysed_real_estate_ads", data=response)
-            print(f"Processed ad: {raw_ad['ad_url']}")
+            response["listing_id"] = listing_id
+            if response["listing_price"] is None:
+                response["listing_price"] = 0
+            db_client.insert_row(schema="real_estate_listings", table="analysed_real_estate_listings", data=response)
+            print(f"Processed ad: {raw_ad['listing_url']}")
         except Exception as e:
-            print(f"Failed to process ad: {raw_ad['ad_url']}, error: {e}")
+            print(f"Failed to process ad: {raw_ad['listing_url']}, error: {e}")
+            raise e
 
 
 if __name__ == "__main__":

@@ -9,18 +9,16 @@ import time
 
 
 class SrealityScraper(BaseAdScrapper):
-    def __init__(self, visited_links: list[str], broken_links: list[str], logger: Logger, headless: bool = True):
+    def __init__(self, visited_links: list[str], logger: Logger, headless: bool = True):
         super().__init__(website_name="sreality",
                          base_url="https://www.sreality.cz/hledani/prodej/byty/praha?strana=0&lat-max=50.11331326855808"
                                   "&lat-min=50.03365817272972&lon-max=14.486485171952392&lon-min=14.400482822098876",
                          visited_links=visited_links,
-                         broken_links=broken_links,
                          headless=headless)
         self.logger = logger
         self.links_to_visit = []
 
         self.new_link_data = []
-        self.new_broken_links = []
 
     def run(self) -> None:
         self.setup_driver()
@@ -79,8 +77,6 @@ class SrealityScraper(BaseAdScrapper):
     def process_ad_page(self, link: str) -> None:
         if link in self.visited_links:
             return
-        elif link in self.broken_links:
-            return
         else:
             self._fetch_data_from_link(link)
 
@@ -96,14 +92,13 @@ class SrealityScraper(BaseAdScrapper):
             all_data = title_data + " " + cost_data + " " + description + " " + meta_description
         except Exception as e:
             self.logger.info(f"Failed to process ad: {link}, error: {e}")
-            self.new_broken_links.append(link)
             return
         self.new_link_data.append(
             {
-                "ad_url": link,
-                "source_name": self.website_name,
+                "listing_url": link,
+                "source_portal": self.website_name,
                 "ad_title": title_data,
-                "ad_subtitle": cost_data,
-                "ad_text": all_data
+                "ad_text": all_data,
+                "is_active": True
             }
         )

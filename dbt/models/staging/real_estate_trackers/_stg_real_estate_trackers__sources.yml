@@ -1,0 +1,80 @@
+version: 2
+
+sources:
+  - name: real_estate_trackers
+    tables:
+      - name: customers
+        description: Contains analyzed data of real estate advertisements, including property details and pricing information.
+        columns:
+          - name: ad_url
+            description: URL of the advertisement.
+            tests:
+              - not_null
+
+      - name: trackers
+        description: Contains user-defined tracking criteria for real estate properties.
+        columns:
+          - name: tracker_id
+            description: Unique identifier for each tracker.
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            description: References the customers table in sales.
+            tests:
+              - not_null
+              - relationships:
+                  to: ref('sales.customers')
+                  field: customer_id
+          - name: tracker_name
+            description: Name of the tracker set by the customer.
+            tests:
+              - not_null
+          - name: property_type
+            description: Type of property being tracked.
+          - name: min_price
+            description: Minimum price range for the tracked property.
+          - name: max_price
+            description: Maximum price range for the tracked property.
+          - name: min_bedrooms
+            description: Minimum number of bedrooms.
+          - name: max_bedrooms
+            description: Maximum number of bedrooms.
+          - name: min_square_meters
+            description: Minimum square meters for the property.
+          - name: max_square_meters
+            description: Maximum square meters for the property.
+          - name: preferences
+            description: Additional preferences stored in JSONB format.
+          - name: created_at
+            description: Timestamp when the tracker was created.
+            tests:
+              - not_null
+          - name: updated_at
+            description: Timestamp when the tracker was last updated.
+            tests:
+              - not_null
+
+      - name: tracker_notifications
+        description: Stores notifications sent for tracker matches.
+        columns:
+          - name: notification_id
+            description: Unique identifier for each notification.
+            tests:
+              - not_null
+              - unique
+          - name: tracker_match_id
+            description: References the tracker_matches table.
+            tests:
+              - not_null
+              - relationships:
+                  to: ref('real_estate_trackers.tracker_matches')
+                  field: tracker_match_id
+          - name: notification_method
+            description: Method of notification delivery (e.g., email, SMS).
+            tests:
+              - not_null
+          - name: sent_at
+            description: Timestamp when the notification was sent.
+            tests:
+              - not_null

@@ -8,19 +8,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class BezRealitkyScraper(BaseAdScrapper):
-    def __init__(self, visited_links: list[str], broken_links: list[str], logger: Logger, headless: bool = True):
+    def __init__(self, visited_links: list[str], logger: Logger, headless: bool = True):
         super().__init__(website_name="bezrealitky",
                          base_url="https://www.bezrealitky.cz/vyhledat?offerType=PRODEJ&estateType=BYT&regionOsmIds="
                                   "R435514&osm_value=Hlavn%C3%AD+m%C4%9Bsto+Praha%2C+Praha%2C+%C4%8Cesko&location=exact"
                                   "&currency=CZK&page=1",
                          visited_links=visited_links,
-                         broken_links=broken_links,
                          headless=headless)
         self.links_to_visit = []
         self.logger = logger
 
         self.new_link_data = []
-        self.new_broken_links = []
 
     def run(self) -> None:
         self.logger.info(f"Starting {self.website_name} scraper")
@@ -73,8 +71,6 @@ class BezRealitkyScraper(BaseAdScrapper):
     def process_ad_page(self, link: str) -> None:
         if link in self.visited_links:
             return
-        elif link in self.broken_links:
-            return
         else:
             self._fetch_data_from_link(link)
 
@@ -93,14 +89,13 @@ class BezRealitkyScraper(BaseAdScrapper):
             all_data = f"{title_data}\n{cost_data}\n{popis_data}"
         except Exception as e:
             self.logger.warning(f"Failed to fetch data from link: {link} {e}")
-            self.new_broken_links.append(link)
             return
         self.new_link_data.append(
             {
-                "ad_url": link,
-                "source_name": self.website_name,
+                "listing_url": link,
+                "source_portal": self.website_name,
                 "ad_title": title_data,
-                "ad_subtitle": cost_data,
-                "ad_text": all_data
+                "ad_text": all_data,
+                "is_active": True
             }
         )

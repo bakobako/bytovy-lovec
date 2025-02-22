@@ -1,0 +1,68 @@
+version: 2
+
+sources:
+  - name: sales
+    tables:
+      - name: customers
+        description: Contains customer details, including personal information and contact preferences.
+        columns:
+          - name: customer_id
+            description: Unique identifier for each customer.
+            tests:
+              - not_null
+              - unique
+          - name: first_name
+            description: First name of the customer.
+            tests:
+              - not_null
+          - name: last_name
+            description: Last name of the customer.
+            tests:
+              - not_null
+          - name: email
+            description: Email address of the customer, must be unique.
+            tests:
+              - not_null
+              - unique
+          - name: phone_number
+            description: Contact number of the customer.
+          - name: signup_date
+            description: Date and time the customer signed up.
+            tests:
+              - not_null
+          - name: status
+            description: Status of the customer (e.g., active, inactive).
+            tests:
+              - not_null
+          - name: preferred_contact_method
+            description: Customer's preferred method of contact.
+
+      - name: subscriptions
+        description: Contains customer subscription details, including plan information and status.
+        columns:
+          - name: subscription_id
+            description: Unique identifier for each subscription.
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            description: References the customers table.
+            tests:
+              - not_null
+              - relationships:
+                  to: ref('customers')
+                  field: customer_id
+          - name: subscription_plan
+            description: Type of subscription plan the customer is enrolled in.
+            tests:
+              - not_null
+          - name: start_date
+            description: Start date of the subscription.
+            tests:
+              - not_null
+          - name: end_date
+            description: End date of the subscription, if applicable.
+          - name: status
+            description: Status of the subscription (e.g., active, expired, canceled).
+            tests:
+              - not_null

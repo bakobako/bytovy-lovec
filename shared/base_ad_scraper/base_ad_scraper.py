@@ -3,13 +3,12 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
 class BaseAdScrapper:
-    def __init__(self, website_name: str, base_url: str, visited_links: list, broken_links: list, headless: bool):
+    def __init__(self, website_name: str, base_url: str, visited_links: list, headless: bool):
         self.website_name = website_name
         self.base_url = base_url
         self.headless = headless
 
         self.visited_links = visited_links
-        self.broken_links = broken_links
 
         self.links_to_visit = []
 

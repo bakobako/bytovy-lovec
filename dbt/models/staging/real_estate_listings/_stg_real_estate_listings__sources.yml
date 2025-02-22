@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: sales
+    tables:
+      - name: customers
+        description: Contains analyzed data of real estate advertisements, including property details and pricing information.
+        columns:
+          - name: ad_url
+            description: URL of the advertisement.
+            tests:
+              - not_null

@@ -1,0 +1,31 @@
+name: notify-trackers-pipeline
+prefect-version: 3.1.12
+
+pull:
+  - prefect.deployments.steps.git_clone:
+      repository: https://github.com/bakobako/bytovy-lovec.git
+      credentials: "{{ prefect.blocks.github-credentials.github-pat }}"
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec
+  - prefect.deployments.steps.run_shell_script:
+       script: |
+            pip install poetry
+            poetry config virtualenvs.create false
+            poetry install --no-interaction --no-root
+       stream_output: true
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec/pipelines/notify_trackers_pipeline
+
+deployments:
+  - name: notify-trackers-pipeline
+    description: Pipeline that notifies trackers about new data
+    entrypoint: notify_trackers_pipeline.py:notify_trackers
+    schedules:
+      - cron: "0 9,12,16 * * *"
+        timezone: "Europe/Prague"
+        active: true
+    tags: ["DBT"]
+    work_pool:
+      name: gcp
+      job_variables:
+        image: bakoad/real-estate-prefect-pipelines:latest
