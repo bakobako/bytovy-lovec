@@ -12,6 +12,7 @@ def fetch_raw_ads(db_client):
     SELECT listing_id FROM real_estate_listings.analysed_real_estate_listings );""")
     return processed_ads
 
+
 @task
 def process_raw_ad(raw_ad, db_client, ai_client, logger):
     ad_text = raw_ad["ad_text"]
@@ -27,6 +28,7 @@ def process_raw_ad(raw_ad, db_client, ai_client, logger):
         logger.error(f"Failed to process ad: {raw_ad['listing_url']}, error: {e}")
         raise e
 
+
 @flow
 def process_raw_ads():
     db_client = init_db_client()
@@ -36,7 +38,6 @@ def process_raw_ads():
     logger = get_run_logger()
     for raw_ad in raw_ads:
         process_raw_ad(raw_ad, db_client, ai_client, logger)
-
 
 
 if __name__ == "__main__":
