@@ -21,7 +21,7 @@ deployments:
     description: Pipeline that processes ingested real estate ads with Gemini API
     entrypoint: process_raw_ads_pipeline.py:process_raw_ads
     schedules:
-      - cron: "0 9,12,16 * * *"
+      - cron: "30 8,11,15 * * *"
         timezone: "Europe/Prague"
         active: true
     tags: ["AI Analysis"]

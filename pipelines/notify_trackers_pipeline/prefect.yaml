@@ -21,7 +21,7 @@ deployments:
     description: Pipeline that notifies trackers about new data
     entrypoint: notify_trackers_pipeline.py:notify_trackers
     schedules:
-      - cron: "0 9,12,16 * * *"
+      - cron: "30 9,12,16 * * *"
         timezone: "Europe/Prague"
         active: true
     tags: ["DBT"]
