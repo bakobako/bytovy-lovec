@@ -1,10 +1,11 @@
 from ai_client import AIClient
 from postgres_client import init_db_client
 from prefect.blocks.system import Secret
+from prefect.cache_policies import NO_CACHE
 from prefect import task, flow, get_run_logger
 
 
-@task
+@task(cache_policy=NO_CACHE)
 def fetch_raw_ads(db_client):
     processed_ads = db_client.execute_query_and_fetch_dicts("""SELECT * FROM 
     real_estate_listings.raw_real_estate_listings 
@@ -13,7 +14,7 @@ def fetch_raw_ads(db_client):
     return processed_ads
 
 
-@task
+@task(cache_policy=NO_CACHE)
 def process_raw_ad(raw_ad, db_client, ai_client, logger):
     ad_text = raw_ad["ad_text"]
     listing_id = raw_ad["listing_id"]
