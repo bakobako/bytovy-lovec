@@ -94,6 +94,7 @@ cleaned_strings_analysed_real_estate_ads as (
         cellar_area_m2,
         lower(unaccent(trim(flooring_type))) as flooring_type
     from joined_ad_data
+    where is_active = true
 )
 
 

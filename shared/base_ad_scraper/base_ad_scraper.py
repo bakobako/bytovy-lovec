@@ -50,3 +50,22 @@ class BaseAdScrapper:
 
     def process_ad_page(self, link: str) -> None:
         pass
+
+    def set_up_for_validation(self) -> None:
+        self.setup_driver()
+        self.driver.get(self.base_url)
+        self.accept_cookies()
+
+    def validate_link(self, link: str) -> tuple[bool, str]:
+        self.driver.get(link)
+        web_content = self.driver.execute_script("return document.body.innerText;")
+        ad_is_active = True
+        if "Tato stránka neexistuje" in web_content:
+            ad_is_active = False
+        elif "Nabídka již není aktivní" in web_content:
+            ad_is_active = False
+        elif "Inzerát již není v nabídce" in web_content:
+            ad_is_active = False
+        elif "This listing is no longer active" in web_content:
+            ad_is_active = False
+        return ad_is_active, web_content
