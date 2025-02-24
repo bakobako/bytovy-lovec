@@ -12,6 +12,20 @@ def fetch_raw_ads(db_client):
     SELECT listing_id FROM real_estate_listings.analysed_real_estate_listings );""")
     return processed_ads
 
+@task
+def process_raw_ad(raw_ad, db_client, ai_client):
+    ad_text = raw_ad["ad_text"]
+    listing_id = raw_ad["listing_id"]
+    try:
+        response = ai_client.analyse_real_estate_ad(ad_text)
+        response["listing_id"] = listing_id
+        if response["listing_price"] is None:
+            response["listing_price"] = 0
+        db_client.insert_row(schema="real_estate_listings", table="analysed_real_estate_listings", data=response)
+        print(f"Processed ad: {raw_ad['listing_url']}")
+    except Exception as e:
+        print(f"Failed to process ad: {raw_ad['listing_url']}, error: {e}")
+        raise e
 
 @flow
 def process_raw_ads():
@@ -20,18 +34,8 @@ def process_raw_ads():
     ai_client = AIClient(api_key=ai_api_key)
     raw_ads = fetch_raw_ads(db_client)
     for raw_ad in raw_ads:
-        ad_text = raw_ad["ad_text"]
-        listing_id = raw_ad["listing_id"]
-        try:
-            response = ai_client.analyse_real_estate_ad(ad_text)
-            response["listing_id"] = listing_id
-            if response["listing_price"] is None:
-                response["listing_price"] = 0
-            db_client.insert_row(schema="real_estate_listings", table="analysed_real_estate_listings", data=response)
-            print(f"Processed ad: {raw_ad['listing_url']}")
-        except Exception as e:
-            print(f"Failed to process ad: {raw_ad['listing_url']}, error: {e}")
-            raise e
+        process_raw_ad(raw_ad, db_client, ai_client)
+
 
 
 if __name__ == "__main__":

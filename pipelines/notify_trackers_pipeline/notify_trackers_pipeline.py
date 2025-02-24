@@ -148,7 +148,7 @@ def setup_scrapers(logger):
 
 
 @flow
-def notify_trackers_pipeline() -> None:
+def notify_trackers() -> None:
     db_client = init_db_client()
     email_bot = init_email_bot()
     logger = get_run_logger()
@@ -160,4 +160,4 @@ def notify_trackers_pipeline() -> None:
 
 
 if __name__ == "__main__":
-    notify_trackers_pipeline()
+    notify_trackers()
