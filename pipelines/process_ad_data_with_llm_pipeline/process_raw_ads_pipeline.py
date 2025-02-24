@@ -37,6 +37,7 @@ def process_raw_ads():
     ai_client = AIClient(api_key=ai_api_key)
     raw_ads = fetch_raw_ads(db_client)
     logger = get_run_logger()
+    logger.info(f"Processing {len(raw_ads)} ads")
     for raw_ad in raw_ads:
         process_raw_ad(raw_ad, db_client, ai_client, logger)
 
