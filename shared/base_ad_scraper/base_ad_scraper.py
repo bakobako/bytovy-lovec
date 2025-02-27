@@ -19,7 +19,10 @@ class BaseAdScrapper:
         for link in links:
             if link in self.visited_links:
                 visited_links += 1
-        percentage = visited_links / len(links)
+        try:
+            percentage = visited_links / len(links)
+        except ZeroDivisionError:
+            percentage = 1
         return percentage
 
     def run(self) -> None:

@@ -12,7 +12,7 @@ class AIClient:
         self.model = genai.GenerativeModel('gemini-1.5-flash')
 
     @retry(tries=4, delay=4, backoff=2)
-    def _call_gemini_flash(self, prompt: str) -> str:
+    def call_gemini_flash(self, prompt: str) -> str:
         response = self.model.generate_content(prompt)
         return response.text
 
@@ -32,7 +32,7 @@ class AIClient:
             raise ValueError(f"Validation failed: {e}")
 
     def get_structured_response(self, prompt: str) -> dict:
-        response_text = self._call_gemini_flash(prompt)
+        response_text = self.call_gemini_flash(prompt)
         return self.turn_response_to_json(response_text)
 
     def analyse_real_estate_ad(self, ad_text: str) -> dict:

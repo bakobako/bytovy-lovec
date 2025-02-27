@@ -1,5 +1,6 @@
 import time
 from logging import Logger
+from typing import Optional
 
 from base_ad_scraper import BaseAdScrapper
 from selenium.webdriver.common.by import By
@@ -72,9 +73,11 @@ class BezRealitkyScraper(BaseAdScrapper):
         if link in self.visited_links:
             return
         else:
-            self._fetch_data_from_link(link)
+            result = self.fetch_data_from_link(link)
+            if result:
+                self.new_link_data.append(result)
 
-    def _fetch_data_from_link(self, link: str) -> None:
+    def fetch_data_from_link(self, link: str) -> Optional[dict]:
         self.driver.get(link)
         try:
             wait = WebDriverWait(self.driver, 10)
@@ -84,18 +87,16 @@ class BezRealitkyScraper(BaseAdScrapper):
             wait.until(EC.presence_of_element_located((By.TAG_NAME, "h1")))
             title_data = self.driver.find_element(By.TAG_NAME, "h1").text
             cost_data = self.driver.find_element(By.XPATH,
-                                                 "/html/body/div[1]/main/div[2]/section/div/div[2]/div/div/div/div/span[2]").text
+                                                 "/html/body/div[1]/main/div[2]/section/div/div[2]/div/div/div/div/span[2]").text  # noqa
             popis_data = self.driver.find_element(By.CLASS_NAME, "col-lg-10").text
             all_data = f"{title_data}\n{cost_data}\n{popis_data}"
         except Exception as e:
             self.logger.warning(f"Failed to fetch data from link: {link} {e}")
             return
-        self.new_link_data.append(
-            {
-                "listing_url": link,
-                "source_portal": self.website_name,
-                "ad_title": title_data,
-                "ad_text": all_data,
-                "is_active": True
-            }
-        )
+        return {
+            "listing_url": link,
+            "source_portal": self.website_name,
+            "ad_title": title_data,
+            "ad_text": all_data,
+            "is_active": True
+        }

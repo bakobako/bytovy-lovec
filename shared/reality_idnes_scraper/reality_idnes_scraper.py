@@ -1,5 +1,6 @@
 import time
 from logging import Logger
+from typing import Optional
 
 from base_ad_scraper import BaseAdScrapper
 from selenium.webdriver.common.by import By
@@ -71,9 +72,11 @@ class RealityIdnesScraper(BaseAdScrapper):
         if link in self.visited_links:
             return
         else:
-            self._fetch_data_from_link(link)
+            result = self.fetch_data_from_link(link)
+            if result:
+                self.new_link_data.append(result)
 
-    def _fetch_data_from_link(self, link: str):
+    def fetch_data_from_link(self, link: str) -> Optional[dict]:
         self.driver.get(link)
         try:
             wait = WebDriverWait(self.driver, 10)
@@ -87,12 +90,10 @@ class RealityIdnesScraper(BaseAdScrapper):
         except Exception as e:
             self.logger.warning(f"Error while processing link {link} {e}")
             return
-        self.new_link_data.append(
-            {
-                "listing_url": link,
-                "source_portal": self.website_name,
-                "ad_title": title_data,
-                "ad_text": all_data,
-                "is_active": True
-            }
-        )
+        return {
+            "listing_url": link,
+            "source_portal": self.website_name,
+            "ad_title": title_data,
+            "ad_text": all_data,
+            "is_active": True
+        }

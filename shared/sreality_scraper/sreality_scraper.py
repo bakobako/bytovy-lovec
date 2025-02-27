@@ -1,5 +1,6 @@
 from logging import Logger
 import requests
+from typing import Optional
 from base_ad_scraper import BaseAdScrapper
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -78,12 +79,17 @@ class SrealityScraper(BaseAdScrapper):
         if link in self.visited_links:
             return
         else:
-            self._fetch_data_from_link(link)
+            result = self.fetch_data_from_link(link)
+            if result:
+                self.new_link_data.append(result)
 
-    def _fetch_data_from_link(self, link: str) -> None:
+    def fetch_data_from_link(self, link: str) -> Optional[dict]:
         try:
             id_of_ad = link.split("/")[-1]
-            data = requests.get(f"https://www.sreality.cz/api/cs/v2/estates/{id_of_ad}").json()
+            # have to add the header because if not the api response is always different for some reason
+            data = requests.get(f"https://www.sreality.cz/api/cs/v2/estates/{id_of_ad}", headers={
+                "User-Agent": "Mozilla/5.0"
+            }).json()
             title_data = data["name"]["value"] + " " + data["locality"]["value"]
             cost_data = data["price_czk"]["value"] + "Kč"
             description = data["text"]["value"]
@@ -93,12 +99,10 @@ class SrealityScraper(BaseAdScrapper):
         except Exception as e:
             self.logger.info(f"Failed to process ad: {link}, error: {e}")
             return
-        self.new_link_data.append(
-            {
-                "listing_url": link,
-                "source_portal": self.website_name,
-                "ad_title": title_data,
-                "ad_text": all_data,
-                "is_active": True
-            }
-        )
+        return {
+            "listing_url": link,
+            "source_portal": self.website_name,
+            "ad_title": title_data,
+            "ad_text": all_data,
+            "is_active": True
+        }
