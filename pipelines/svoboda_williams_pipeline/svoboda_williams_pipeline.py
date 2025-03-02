@@ -1,7 +1,9 @@
-from {{scraper_class_python_file}} import {{scraper_class_name}}
+from svoboda_williams_scraper import SvobodaWilliamsScraper
 
 from prefect import task, flow, get_run_logger
 from postgres_client import init_db_client
+from typing import Optional
+
 
 def check_if_url_in_db(url: str) -> bool:
     db_client = init_db_client()
@@ -9,18 +11,19 @@ def check_if_url_in_db(url: str) -> bool:
         f"SELECT listing_url FROM real_estate_listings.raw_real_estate_listings WHERE listing_url = '{url}'")
     return len(result) > 0
 
+
 @flow
-def {{scraper_download_function_name}}():
+def download_svoboda_williams_data():
     db_client = init_db_client()
 
     visited_links = db_client.execute_query_and_fetch_dicts("SELECT listing_url "
                                                             "FROM real_estate_listings.raw_real_estate_listings "
-                                                            "where source_portal='{{website_name}}';")
-    visited_links = [link["ad_url"] for link in visited_links]
+                                                            "where source_portal='svoboda_williams';")
+    visited_links = [link["listing_url"] for link in visited_links]
 
     logger = get_run_logger()
 
-    scraper = {{scraper_class_name}}(
+    scraper = SvobodaWilliamsScraper(
         visited_links=visited_links,
         headless=True,
         logger=logger
@@ -35,4 +38,4 @@ def {{scraper_download_function_name}}():
 
 
 if __name__ == "__main__":
-    {{scraper_download_function_name}}()
+    download_svoboda_williams_data()

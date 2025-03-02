@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from logging import Logger
+from typing import Optional
 
 
 class {{scraper_class_name}}(BaseAdScrapper):
@@ -70,7 +71,7 @@ class {{scraper_class_name}}(BaseAdScrapper):
             if result:
                 self.new_link_data.append(result)
 
-    def _fetch_data_from_link(self, link: str)-> None:
+    def _fetch_data_from_link(self, link: str)-> Optional[dict]:
         self.driver.get(link)
         try:
             wait = WebDriverWait(self.driver, 10)

@@ -38,6 +38,7 @@ dbt-postgres = "1.9.0"
 resend = "2.6.0"
 retry = "0.9.2"
 slack_sdk = "3.34.0"
+svoboda-williams-scraper = {path = "shared/svoboda_williams_scraper"}
 
 [build-system]
 requires = ["poetry-core"]
