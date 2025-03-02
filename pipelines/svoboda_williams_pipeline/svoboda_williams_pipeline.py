@@ -13,7 +13,7 @@ def check_if_url_in_db(url: str) -> bool:
 
 
 @flow
-def download_svoboda_williams_data():
+def download_s_williams_data():
     db_client = init_db_client()
 
     visited_links = db_client.execute_query_and_fetch_dicts("SELECT listing_url "

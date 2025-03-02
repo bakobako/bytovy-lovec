@@ -19,7 +19,7 @@ pull:
 deployments:
   - name: svoboda-williams-pipeline
     description: Download and store data from SvobodaWilliams
-    entrypoint: svoboda_williams_pipeline.py:{{download_function_name}}
+    entrypoint: svoboda_williams_pipeline.py:download_s_williams_data
     schedules:
       - cron: "0 8,11,15 * * *"
         timezone: "Europe/Prague"
