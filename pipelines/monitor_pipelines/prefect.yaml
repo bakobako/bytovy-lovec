@@ -26,7 +26,8 @@ deployments:
                                   "download-srealty-data",
                                   "notify-trackers",
                                   "process-raw-ads",
-                                  "run-real-estate-dbt" ] }
+                                  "run-real-estate-dbt",
+                                  "daily-summary"] }
     schedules:
       - cron: "0 12,19 * * *"
         timezone: "Europe/Prague"

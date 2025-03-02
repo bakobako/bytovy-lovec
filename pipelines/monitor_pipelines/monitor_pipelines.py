@@ -100,4 +100,5 @@ if __name__ == "__main__":
                                     "download-srealty-data",
                                     "notify-trackers",
                                     "process-raw-ads",
-                                    "run-real-estate-dbt"])
+                                    "run-real-estate-dbt",
+                                    "daily-summary"])
