@@ -7,17 +7,15 @@ from logging import Logger
 
 
 class {{scraper_class_name}}(BaseAdScrapper):
-    def __init__(self, visited_links: list[str], broken_links: list[str], logger: Logger, headless: bool=True):
+    def __init__(self, visited_links: list[str], logger: Logger, headless: bool=True):
         super().__init__(website_name="{{website_snake_case_name}}",
                          base_url="FILL IN",
                          visited_links=visited_links,
-                         broken_links=broken_links,
                          headless=headless)
         self.logger = logger
         self.links_to_visit = []
 
         self.new_link_data = []
-        self.new_broken_links = []
 
     def run(self)-> None:
         self.setup_driver()
@@ -64,13 +62,13 @@ class {{scraper_class_name}}(BaseAdScrapper):
 
         self.links_to_visit = links
 
-    def process_ad_page(self, link: str)-> None:
+    def process_ad_page(self, link: str) -> None:
         if link in self.visited_links:
             return
-        elif link in self.broken_links:
-            return
         else:
-            self._fetch_data_from_link(link)
+            result = self.fetch_data_from_link(link)
+            if result:
+                self.new_link_data.append(result)
 
     def _fetch_data_from_link(self, link: str)-> None:
         self.driver.get(link)
@@ -83,14 +81,11 @@ class {{scraper_class_name}}(BaseAdScrapper):
             all_data = f"{title_data}\n{cost_data}\n{popis_data}"
         except Exception as e:
             self.logger.info(f"Failed to process ad: {link}, error: {e}")
-            self.new_broken_links.append(link)
             return
-        self.new_link_data.append(
-            {
-                "ad_url": link,
-                "source_name": self.website_name,
-                "ad_title": title_data,
-                "ad_subtitle": cost_data,
-                "ad_text": all_data
-            }
-        )
+        return {
+            "listing_url": link,
+            "source_portal": self.website_name,
+            "ad_title": title_data,
+            "ad_text": all_data,
+            "is_active": True
+        }

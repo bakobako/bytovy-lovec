@@ -3,6 +3,11 @@ from {{scraper_class_python_file}} import {{scraper_class_name}}
 from prefect import task, flow, get_run_logger
 from postgres_client import init_db_client
 
+def check_if_url_in_db(url: str) -> bool:
+    db_client = init_db_client()
+    result = db_client.execute_query_and_fetch_dicts(
+        f"SELECT listing_url FROM real_estate_listings.raw_real_estate_listings WHERE listing_url = '{url}'")
+    return len(result) > 0
 
 @flow
 def {{scraper_download_function_name}}():
@@ -12,14 +17,11 @@ def {{scraper_download_function_name}}():
                                                             "FROM raw.raw_real_estate_ads "
                                                             "where source_name='{{website_name}}';")
     visited_links = [link["ad_url"] for link in visited_links]
-    broken_links = db_client.execute_query_and_fetch_dicts("SELECT ad_url from raw.raw_invalid_urls;")
-    broken_links = [link["ad_url"] for link in broken_links]
 
     logger = get_run_logger()
 
     scraper = {{scraper_class_name}}(
         visited_links=visited_links,
-        broken_links=broken_links,
         headless=True,
         logger=logger
     )
@@ -27,11 +29,9 @@ def {{scraper_download_function_name}}():
 
     logger.info(f"Found {len(scraper.new_link_data)} new ads")
     logger.info(f"Inserting to DB")
-
     for ad in scraper.new_link_data:
-        db_client.insert_row(schema="raw", table="raw_real_estate_ads", data=ad)
-    for link in scraper.new_broken_links:
-        db_client.insert_row(schema="raw", table="raw_invalid_urls", data={"ad_url": link})
+        if not check_if_url_in_db(ad["listing_url"]):
+            db_client.insert_row(schema="real_estate_listings", table="raw_real_estate_listings", data=ad)
 
 
 if __name__ == "__main__":
