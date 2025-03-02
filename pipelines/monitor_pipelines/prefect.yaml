@@ -1,0 +1,38 @@
+name: monitoring-pipeline
+prefect-version: 3.1.12
+
+pull:
+  - prefect.deployments.steps.git_clone:
+      repository: https://github.com/bakobako/bytovy-lovec.git
+      credentials: "{{ prefect.blocks.github-credentials.github-pat }}"
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec
+  - prefect.deployments.steps.run_shell_script:
+      script: |
+        pip install poetry
+        poetry config virtualenvs.create false
+        poetry install --no-interaction --no-root
+      stream_output: true
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec/pipelines/monitor_pipelines
+
+deployments:
+  - name: monitoring-pipeline
+    description: Pipeline to monitor the status of other pipelines
+    entrypoint: monitor_pipelines.py:pipeline_monitoring
+    parameters: { "check_hours_ago": 24,
+                  "flow_names": [ "download-bezrealitky-data",
+                                  "download-reality-idnes-data",
+                                  "download-srealty-data",
+                                  "notify-trackers",
+                                  "process-raw-ads",
+                                  "run-real-estate-dbt" ] }
+    schedules:
+      - cron: "0 12,19 * * *"
+        timezone: "Europe/Prague"
+        active: true
+    tags: [ "MONITORING" ]
+    work_pool:
+      name: gcp
+      job_variables:
+        image: bakoad/real-estate-prefect-pipelines:latest
