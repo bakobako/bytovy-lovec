@@ -1,14 +1,8 @@
-from prefect import flow, task, get_run_logger
+from prefect import flow
 from prefect.blocks.system import Secret
 from slack_sdk import WebClient
-from typing import List
-from prefect.client.orchestration import get_client
-from prefect.client.schemas import FlowRun
-from prefect.server.schemas.filters import FlowFilter, FlowFilterName
 from postgres_client import PostgresClient, init_db_client
-import asyncio
-from datetime import datetime, timedelta, timezone
-from prefect.cache_policies import NO_CACHE
+from datetime import datetime
 
 PIPELINES_SLACK_CHANNEL = 'C08FHEL2HGE'
 
@@ -19,7 +13,6 @@ def send_message_to_slack(message: str) -> None:
     client.chat_postMessage(channel=PIPELINES_SLACK_CHANNEL, text=message)
 
 
-@task(cache_policy=NO_CACHE)
 def get_added_real_estate_listings(db_client: PostgresClient):
     query = """
     SELECT source_portal, COUNT(*) as listings_count
@@ -36,7 +29,6 @@ def get_added_real_estate_listings(db_client: PostgresClient):
     return clean_result
 
 
-@task(cache_policy=NO_CACHE)
 def get_number_of_trackers(db_client: PostgresClient):
     query = """
     SELECT COUNT(DISTINCT tracker_id) as tracker_count
@@ -47,7 +39,6 @@ def get_number_of_trackers(db_client: PostgresClient):
     return result[0]["tracker_count"]
 
 
-@task(cache_policy=NO_CACHE)
 def get_sent_real_estate_listings(db_client: PostgresClient):
     query = """
     SELECT COUNT(*) as sent_listings_count
