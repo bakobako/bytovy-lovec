@@ -24,10 +24,12 @@ deployments:
                   "flow_names": [ "download-bezrealitky-data",
                                   "download-reality-idnes-data",
                                   "download-srealty-data",
+                                  "download-mm-reality-data",
+                                  "download-s-williams-data",
                                   "notify-trackers",
                                   "process-raw-ads",
                                   "run-real-estate-dbt",
-                                  "daily-summary"] }
+                                  "daily-summary" ] }
     schedules:
       - cron: "0 12,19 * * *"
         timezone: "Europe/Prague"

@@ -98,6 +98,8 @@ if __name__ == "__main__":
                         flow_names=["download-bezrealitky-data",
                                     "download-reality-idnes-data",
                                     "download-srealty-data",
+                                    "download-mm-reality-data",
+                                    "download-s-williams-data",
                                     "notify-trackers",
                                     "process-raw-ads",
                                     "run-real-estate-dbt",
