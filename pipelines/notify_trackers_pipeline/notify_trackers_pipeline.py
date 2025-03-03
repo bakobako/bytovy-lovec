@@ -8,6 +8,8 @@ import time
 from bezrealitky_scraper import BezRealitkyScraper
 from reality_idnes_scraper import RealityIdnesScraper
 from sreality_scraper import SrealityScraper
+from svoboda_williams_scraper import SvobodaWilliamsScraper
+from mm_reality_scraper import MmRealityScraper
 
 
 def init_email_bot():
@@ -139,10 +141,25 @@ def setup_scrapers(logger):
         headless=True
     )
     rid_scraper.set_up_for_validation()
+    sw_scraper = SvobodaWilliamsScraper(
+        visited_links=[],
+        logger=logger,
+        headless=True
+    )
+    sw_scraper.set_up_for_validation()
+
+    mm_scraper = MmRealityScraper(
+        visited_links=[],
+        logger=logger,
+        headless=True
+    )
+    mm_scraper.set_up_for_validation()
     scrapers = {
         "bezrealitky.cz": br_scraper,
         "sreality.cz": sr_scraper,
-        "reality.idnes.cz": rid_scraper
+        "reality.idnes.cz": rid_scraper,
+        "svoboda-williams.com": sw_scraper,
+        "mmreality.cz": mm_scraper
     }
     return scrapers
 

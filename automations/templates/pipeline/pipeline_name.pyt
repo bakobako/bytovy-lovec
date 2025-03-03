@@ -16,7 +16,7 @@ def {{scraper_download_function_name}}():
     visited_links = db_client.execute_query_and_fetch_dicts("SELECT listing_url "
                                                             "FROM real_estate_listings.raw_real_estate_listings "
                                                             "where source_portal='{{website_name}}';")
-    visited_links = [link["ad_url"] for link in visited_links]
+    visited_links = [link["listing_url"] for link in visited_links]
 
     logger = get_run_logger()
 
