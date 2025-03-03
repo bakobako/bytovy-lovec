@@ -21,19 +21,30 @@ def send_message_to_slack(message: str) -> None:
     client.chat_postMessage(channel=PIPELINES_SLACK_CHANNEL, text=message)
 
 
-async def _get_flow_runs(flow_names: List[str]) -> List[FlowRun]:
+async def get_recent_flow_runs(flow_name):
+    now = datetime.utcnow()
+    yesterday = now - timedelta(hours=24)
+
     async with get_client() as client:
-        flow_filter = FlowFilter(name={"any_": flow_names})
-        runs = await client.read_flow_runs(flow_run_filter=FlowRunFilter(flows=flow_filter))
-        return runs
+        flows = await client.read_flows(flow_filter=FlowFilter(name={'eq_': flow_name}))
+        if not flows:
+            return []
+        flow_id = flows[0].id
+
+        flow_run_filter = FlowRunFilter(
+            flow_id={'eq_': flow_id},
+            start_time={'gte_': yesterday.isoformat()}
+        )
+        flow_runs = await client.read_flow_runs(flow_run_filter=flow_run_filter)
+        return [run for run in flow_runs if run.flow_id == flow_id]
 
 
-def get_flow_runs(flow_names: List[str]) -> List[FlowRun]:
+def get_flow_runs(flow_names: List[str]):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    result = loop.run_until_complete(_get_flow_runs(flow_names))
+    result = [loop.run_until_complete(get_recent_flow_runs(flow_name)) for flow_name in flow_names]
     loop.close()
-    return result
+    return [run for sublist in result for run in sublist]
 
 
 def get_failed_flows(flows: List[FlowRun], check_hours_ago: int) -> List[FlowRun]:
