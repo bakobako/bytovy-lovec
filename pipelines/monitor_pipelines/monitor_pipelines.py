@@ -4,7 +4,7 @@ from slack_sdk import WebClient
 from typing import List
 from prefect.client.orchestration import get_client
 from prefect.client.schemas import FlowRun
-from prefect.server.schemas.filters import FlowFilter, FlowFilterName
+from prefect.client.schemas.filters import FlowRunFilter, FlowFilter
 from postgres_client import PostgresClient, init_db_client
 import asyncio
 from datetime import datetime, timedelta, timezone
@@ -22,10 +22,10 @@ def send_message_to_slack(message: str) -> None:
 
 
 async def _get_flow_runs(flow_names: List[str]) -> List[FlowRun]:
-    prefect_client = get_client()
-    flow_filter = FlowFilter(name=FlowFilterName(any_=flow_names))
-    flows = await prefect_client.read_flow_runs(flow_filter=flow_filter)
-    return flows
+    async with get_client() as client:
+        flow_filter = FlowFilter(name={"any_": flow_names})
+        runs = await client.read_flow_runs(flow_run_filter=FlowRunFilter(flows=flow_filter))
+        return runs
 
 
 def get_flow_runs(flow_names: List[str]) -> List[FlowRun]:
@@ -94,7 +94,7 @@ def pipeline_monitoring(flow_names: List[str], check_hours_ago: int = 24) -> Non
 
 
 if __name__ == "__main__":
-    pipeline_monitoring(check_hours_ago=120,
+    pipeline_monitoring(check_hours_ago=24,
                         flow_names=["download-bezrealitky-data",
                                     "download-reality-idnes-data",
                                     "download-srealty-data",
