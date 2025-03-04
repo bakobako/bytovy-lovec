@@ -1,0 +1,31 @@
+name: archer-reality-pipeline
+prefect-version: 3.1.12
+
+pull:
+  - prefect.deployments.steps.git_clone:
+      repository: https://github.com/bakobako/bytovy-lovec.git
+      credentials: "{{ prefect.blocks.github-credentials.github-pat }}"
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec
+  - prefect.deployments.steps.run_shell_script:
+       script: |
+            pip install poetry
+            poetry config virtualenvs.create false
+            poetry install --no-interaction --no-root
+       stream_output: true
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/bytovy-lovec/pipelines/archer_reality_pipeline
+
+deployments:
+  - name: archer-reality-pipeline
+    description: Download and store data from ArcherReality
+    entrypoint: archer_reality_pipeline.py:{{download_function_name}}
+    schedules:
+      - cron: "0 8,11,15 * * *"
+        timezone: "Europe/Prague"
+        active: true
+    tags: ["Webscraper"]
+    work_pool:
+      name: gcp
+      job_variables:
+        image: bakoad/real-estate-prefect-pipelines:latest

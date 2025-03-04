@@ -40,6 +40,7 @@ retry = "0.9.2"
 slack_sdk = "3.34.0"
 svoboda-williams-scraper = {path = "shared/svoboda_williams_scraper"}
 mm-reality-scraper = {path = "shared/mm_reality_scraper"}
+archer-reality-scraper = {path = "shared/archer_reality_scraper"}
 
 [build-system]
 requires = ["poetry-core"]
